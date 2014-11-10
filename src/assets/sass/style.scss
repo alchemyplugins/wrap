@@ -1,0 +1,39 @@
+.ap_wrap3 {
+	#submitdiv {
+		.misc-pub-curtime,
+		.misc-pub-visibility {
+			display:none;
+		}
+	}
+	@media screen and (max-width: 799px) {
+		#slugdiv, #authordiv {
+			input, select {
+				width:100%;
+			}
+		}
+	}
+	#slugdiv {
+		input {
+			width:50%;
+		}
+	}
+	#authordiv {
+		select {
+			width:25%;
+		}
+	}
+	#side-sortables {
+		#slugdiv, #authordiv {
+			input, select {
+				width:100%;
+			}
+		}
+	}
+}
+.widgets-php {
+	.<%= pkg.settings.namespace %>-widget-form {
+		select {
+			width:100%;
+		}
+	}
+}

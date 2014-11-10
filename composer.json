@@ -1,0 +1,11 @@
+{
+    "config": {
+        "bin-dir": "bin/"
+    },
+    "minimum-stability": "stable",
+    "require-dev": {
+        "10up/wp_mock": "dev-master",
+        "facebook/webdriver": "dev-master",
+        "emagister/selenium-server": "2.*"
+    }
+}

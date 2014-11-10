@@ -1,0 +1,56 @@
+{
+	"private": true,
+	"devDependencies": {
+		"grunt-contrib-clean": "^0.6.0",
+		"grunt-contrib-compress": "^0.11.0",
+		"grunt-contrib-copy": "^0.5.0",
+		"grunt-contrib-jshint": "^0.10.0",
+		"grunt-contrib-sass": "^0.8.1",
+		"grunt-contrib-uglify": "^0.5.1",
+		"grunt-contrib-watch": "^0.6.1",
+		"grunt-notify": "^0.3.1",
+		"grunt-shell": "^1.1.1",
+		"load-grunt-tasks": "^0.6.0"
+	},
+	"name": "ap-wrap",
+	"title": "Wrap by AlchemyPlugins",
+	"description": "Neatly wrap content snippets for use anywhere in WordPress.",
+	"version": "0.1.0",
+	"homepage": "http://alchemyplugins.com/wrap/",
+	"author": {
+		"name": "AlchemyPlugins",
+		"email": "support@alchemyplugins.com",
+		"url": "http://alchemyplugins.com"
+	},
+	"keywords": [
+		"content",
+		"wrapper",
+		"content block",
+		"container",
+		"bin",
+		"adsense",
+		"paypal",
+		"ads",
+		"twitter",
+		"facebook",
+		"code",
+		"code snippet",
+		"snippets",
+		"snippet",
+		"global variables",
+		"iframe",
+		"inserts",
+		"raw html",
+		"reusable",
+		"shortcodes",
+		"shortcode",
+		"vars",
+		"variables"
+	],
+	"settings": {
+		"namespace": "ap",
+		"cpt": "ap_snippet",
+		"slug": "ap_wrap",
+		"wpDir": "../../wpdev/"
+	}
+}
