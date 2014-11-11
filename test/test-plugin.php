@@ -1,24 +1,21 @@
 <?php
 
-class PluginTest extends AP_UnitTestCase
+class PluginTest extends PHPUnit_Framework_TestCase
 {
-	function test_props()
-	{
-		$data = get_plugin_data( dirname( __FILE__ ) . '/../build/wrap.php' );
+	public function setUp() {
+        \WP_Mock::setUp();
+    }
 
-		$this->assertEquals($data['Name'], 'Wrap by AlchemyPlugins');
-	}
+    public function tearDown() {
+        \WP_Mock::tearDown();
+    }
 
-	public function test_that_plugin_name_is_correct()
+	public function test_init()
 	{
-		$this->assertEquals('ap-wrap', '');
-	}
+		$p = new AP_Wrap;
 
-	/**
-	 * @expectedException WPDieException
-	 */
-	public function test_that_wpdie_throws_an_exception()
-	{
-		wp_die();
+		\WP_Mock::expectActionAdded( 'init', array( $p, 'register_cpt' ) );
+
+		$p->init();
 	}
 }

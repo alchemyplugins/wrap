@@ -39,7 +39,7 @@
     "namespace": "ap",
     "cpt": "ap_snippet",
     "slug": "ap_wrap",
-    "wpDir": "../../wpdev/"
+    "wpDir": "../../../farinspace/wpdev/"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
