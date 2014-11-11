@@ -52,5 +52,8 @@
 		"cpt": "ap_snippet",
 		"slug": "ap_wrap",
 		"wpDir": "../../wpdev/"
+	},
+	"scripts": {
+		"postinstall": "grunt build"
 	}
 }
