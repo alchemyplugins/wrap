@@ -10,6 +10,12 @@
  * Domain Path: /languages
  */
 
+require_once dirname(__FILE__) . '/assets/inc/AP_Wrap.php';
+
+$wrap = new AP_Wrap;
+$wrap->init();
+
+
 define( 'AP_WRAP_VERSION', '<%= pkg.version %>' );
 define( 'AP_WRAP_URL',     plugin_dir_url( __FILE__ ) );
 define( 'AP_WRAP_PATH',    dirname( __FILE__ ) . '/' );
@@ -17,7 +23,7 @@ define( 'AP_WRAP_PATH',    dirname( __FILE__ ) . '/' );
 $cpt = 'ap_wrap3';
 
 
-
+/*
 add_action( 'init', 'ap_register_cpt' );
 
 function ap_register_cpt() {
@@ -45,17 +51,15 @@ function ap_register_cpt() {
 		'public'             => false,
 		'show_ui'            => true,
 		'show_in_menu'       => true,
-
 		'rewrite'            => false,
-
 		'capability_type'    => 'post',
-
 		'menu_position'      => null,
-		'supports'           => array( 'title', 'editor', 'author', 'revisions' )
+		'supports'           => array( 'title', 'editor', 'author', 'revisions' ),
+		'menu_icon'          => 'dashicons-forms'
 	);
 
 	register_post_type( $cpt, $args );
-}
+}*/
 
 // enqueue style and script, inject my.ajaxurl
 add_action( 'admin_enqueue_scripts', '<%= pkg.settings.namespace %>_enqueue_scripts' );

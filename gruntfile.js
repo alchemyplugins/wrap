@@ -122,6 +122,8 @@ module.exports = function(grunt) {
 	}
 	*/
 	// tasks
+	// build test // setup testing files
+	// build core // setup plugin files
 	grunt.registerTask('build', ['clean:beforeBuild', 'copy:build', 'jshint:build', 'sass:build', 'uglify:build', 'clean:afterBuild', 'notify:build']);
 	grunt.registerTask('deploy', ['build', 'copy:deploy', 'notify:deploy']);
 	//grunt.registerTask('release', ['build']);
