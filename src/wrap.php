@@ -196,7 +196,9 @@ function <%= pkg.settings.namespace %>_register_widget() {
 }
 
 
-
+// finds
+// https://lkwdwrd.com/wp-shortcode-wp-html-wordpress-shortcodes-javascript/
+// http://twig.sensiolabs.org
 
 // similar plugins:
 // https://wordpress.org/plugins/global-content-blocks/

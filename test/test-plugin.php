@@ -93,4 +93,41 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals( 2, count( $result ) );
 		$this->assertNotContains( 'authordiv', $result );
 	}
+
+	function test_setup_shortcode() {
+		\WP_Mock::wpFunction( 'add_shortcode', array(
+			'times' => 1,
+			'args' => array( 'wrapper', array( $this->plugin, 'wrapper_shortcode' ) )
+		) );
+		$this->plugin->setup_shortcode();
+	}
+
+	/**
+	 * @dataProvider wrapper_shortcode_id
+	 */
+	function test_wrapper_shortcode($id) {
+		$post = new stdClass;
+		$post->post_content = 'foo{{var}} {{content}}';
+		\WP_Mock::wpFunction( 'get_post', array(
+			'return' => $post
+		) );
+		\WP_Mock::wpFunction( 'get_page_by_path', array(
+			'return' => $post
+		) );
+		$atts = array( 'id' => $id, 'var' => 'bar' );
+		\WP_Mock::wpFunction( 'shortcode_atts', array(
+			'return' => $atts
+		) );
+		\WP_Mock::wpPassthruFunction( 'do_shortcode' );
+		\WP_Mock::onFilter( 'ap_wrap_wrapper_content' );
+		$content = $this->plugin->wrapper_shortcode( $atts, 'baz' );
+		$this->assertEquals( 'foobar baz', $content );
+	}
+
+	function wrapper_shortcode_id() {
+		return array(
+			array( 1 ),
+			array( 'id-slug' ),
+		);
+	}
 }
