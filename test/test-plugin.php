@@ -19,7 +19,7 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 				'ap-wrap',
 			),
 		) );
-		$this->plugin = new AP_Wrap;
+		$this->plugin = new AlchemyPlugins\Wrap;
 	}
 
 	function tearDown() {

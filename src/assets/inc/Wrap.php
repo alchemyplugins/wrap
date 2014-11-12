@@ -1,6 +1,8 @@
 <?php
 
-class AP_Wrap {
+namespace AlchemyPlugins;
+
+class Wrap {
 
 	public $cpt = 'ap_wrap3';
 

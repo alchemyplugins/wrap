@@ -12,7 +12,7 @@
 
 require_once dirname(__FILE__) . '/assets/inc/AP_Wrap.php';
 
-$wrap = new AP_Wrap;
+$wrap = new AlchemyPlugins\Wrap;
 $wrap->init();
 
 
