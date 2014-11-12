@@ -22,45 +22,6 @@ define( 'AP_WRAP_PATH',    dirname( __FILE__ ) . '/' );
 
 $cpt = 'ap_wrap3';
 
-
-/*
-add_action( 'init', 'ap_register_cpt' );
-
-function ap_register_cpt() {
-
-	global $cpt;
-	$labels = array(
-		'name'               => _x( 'Wraps', 'post type general name', '<%= pkg.name %>' ),
-		'singular_name'      => _x( 'Wrap', 'post type singular name', '<%= pkg.name %>' ),
-		'menu_name'          => _x( 'Wraps', 'admin menu', '<%= pkg.name %>' ),
-		'name_admin_bar'     => _x( 'Wrap', 'add new on admin bar', '<%= pkg.name %>' ),
-		'add_new'            => _x( 'Add New', 'wrap', '<%= pkg.name %>' ),
-		'add_new_item'       => __( 'Add New Wrap', '<%= pkg.name %>' ),
-		'new_item'           => __( 'New Wrap', '<%= pkg.name %>' ),
-		'edit_item'          => __( 'Edit Wrap', '<%= pkg.name %>' ),
-		'view_item'          => __( 'View Wrap', '<%= pkg.name %>' ),
-		'all_items'          => __( 'All Wraps', '<%= pkg.name %>' ),
-		'search_items'       => __( 'Search Wraps', '<%= pkg.name %>' ),
-		'parent_item_colon'  => __( 'Parent Wraps:', '<%= pkg.name %>' ),
-		'not_found'          => __( 'No wraps found.', '<%= pkg.name %>' ),
-		'not_found_in_trash' => __( 'No wraps found in Trash.', '<%= pkg.name %>' )
-	);
-
-	$args = array(
-		'labels'             => $labels,
-		'public'             => false,
-		'show_ui'            => true,
-		'show_in_menu'       => true,
-		'rewrite'            => false,
-		'capability_type'    => 'post',
-		'menu_position'      => null,
-		'supports'           => array( 'title', 'editor', 'author', 'revisions' ),
-		'menu_icon'          => 'dashicons-forms'
-	);
-
-	register_post_type( $cpt, $args );
-}*/
-
 // enqueue style and script, inject my.ajaxurl
 add_action( 'admin_enqueue_scripts', '<%= pkg.settings.namespace %>_enqueue_scripts' );
 function <%= pkg.settings.namespace %>_enqueue_scripts() {
@@ -73,86 +34,6 @@ function <%= pkg.settings.namespace %>_enqueue_scripts() {
 }
 
 
-
-
-
-function remove_quick_edit( $actions, $post ) {
-	global $cpt;
-    if( $cpt === $post->post_type ) {
-		// hide "quick edit"
-		unset($actions['inline hide-if-no-js']);
-	}
-
-    return $actions;
-}
-
-if (is_admin()) {
-	add_filter('post_row_actions','remove_quick_edit',10,2);
-	//var_dump($GLOBALS);
-}
-
-add_action( 'add_meta_boxes', 'my_remove_meta_boxes', 0 );
-
-function my_remove_meta_boxes(){
-	global $cpt;
-	remove_meta_box( 'slugdiv', $cpt, 'normal' );
-	add_meta_box( 'slugdiv', __( 'Content Name', '<%= pkg.name %>' ), 'post_slug_meta_box', $cpt, 'side');
-
-	remove_meta_box( 'authordiv', $cpt, 'normal' );
-	add_meta_box('authordiv', __( 'Author' ), 'post_author_meta_box', $cpt, 'side');
-}
-
-function vpm_default_hidden_meta_boxes( $hidden, $screen ) {
-	global $cpt;
-	if ( $cpt === $screen->post_type ) {
-		array_push( $hidden, 'authordiv' );//'revisionsdiv'
-	}
-	return $hidden;
-}
-
-add_action( 'default_hidden_meta_boxes', 'vpm_default_hidden_meta_boxes', 10, 2 );
-
-add_shortcode( 'wrapper', 'ap_wrapper');
-
-function ap_wrapper( $atts, $content = null )
-{
-	global $cpt;
-
-	$default_atts = array(
-		'id' => null
-	);
-
-	extract( shortcode_atts( $default_atts, $atts, 'wrapper' ) );
-
-	unset( $atts['id'] );
-
-	if ( is_numeric( $id ) ) {
-		$post = get_post( $id );
-	}
-	else {
-		$post = get_page_by_path( $id, 'OBJECT', $cpt );
-	}
-
-	$search = array();
-	$replace = array();
-
-	if ( isset( $content ) ) {
-		array_push( $search, '{{content}}' );
-		array_push( $replace, $content );
-	}
-
-	foreach( $atts as $key => $val ) {
-		// todo: sanitize vaues
-		array_push( $search, '{{' . $key . '}}' );
-		array_push( $replace, $val );
-	}
-
-	$post_content = apply_filters( 'ap_wrap_wrapper_content', $post->post_content, $search, $replace );
-
-	$post_content = str_replace( $search, $replace, $post_content );
-
-	return do_shortcode( $post_content );
-}
 
 
 
@@ -328,3 +209,4 @@ function <%= pkg.settings.namespace %>_register_widget() {
 // option to remove wordpress wpautop and texturize from content
 // default translations: spanish, French, German, Polish, Russian, Chinese, Japanese
 // custom menu icon
+// use template engine (Twig, Handlebars, ...);
