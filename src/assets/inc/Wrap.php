@@ -2,13 +2,26 @@
 
 namespace AlchemyPlugins;
 
+// wrapper
+// snippet
+// fragment
+// scrap
+
 class Wrap {
 
 	public $cpt = 'ap_wrap3';
 
-	public function init() {
+	public $widget_class = null;
+
+	function init() {
 		$this->setup_cpt();
 		$this->setup_shortcode();
+	}
+
+	function init_widget( $widget_class ) {
+		$this->widget_class = $widget_class;
+		add_action( 'widgets_init', array( $this, 'register_widget' ) );
+		add_action( 'wp_ajax_ap_get_wrapper_vars', array( $this, 'widget_ajax' ));
 	}
 
 	/**
@@ -16,7 +29,7 @@ class Wrap {
 	 *
 	 * @return void
 	 */
-	function setup_cpt() {
+	private function setup_cpt() {
 		add_action( 'init', array( $this, 'register_cpt' ) );
 		add_action( 'add_meta_boxes', array( $this, 'adjust_meta_boxes' ), 0 );
 		add_action( 'default_hidden_meta_boxes', array( $this, 'set_default_hidden_meta_boxes'), 10, 2 );
@@ -25,16 +38,17 @@ class Wrap {
 		}
 	}
 
-	function setup_shortcode() {
+	private function setup_shortcode() {
 		add_shortcode( 'wrapper', array( $this, 'wrapper_shortcode' ) );
 	}
 
 	/**
 	 * Register post type.
 	 *
+	 * @access private
 	 * @return void
 	 */
-	public function register_cpt() {
+	function register_cpt() {
 		$labels = array(
 			'name'               => _x( 'Wraps', 'post type general name', '<%= pkg.name %>' ),
 			'singular_name'      => _x( 'Wrap', 'post type singular name', '<%= pkg.name %>' ),
@@ -166,5 +180,18 @@ class Wrap {
 			}
 		}
 		return str_replace( $search, $replace, $str );
+	}
+
+	function register_widget() {
+		register_widget( $this->widget_class );
+	}
+
+	function widget_ajax() {
+		echo call_user_func( array( $this->widget_class, 'get_var_fields' ), $this->request( 'post_id' ), $this->request( 'field_id' ), $this->request( 'field_name' ) );
+		wp_die();
+	}
+
+	private function request( $var ) {
+		return isset( $_REQUEST[ $var ] ) ? $_REQUEST[ $var ] : null ;
 	}
 }

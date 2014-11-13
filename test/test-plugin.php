@@ -27,7 +27,7 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 		\WP_Mock::tearDown();
 	}
 
-	function test_setup_cpt() {
+	function test_init() {
 		\WP_Mock::expectActionAdded( 'init', array( $this->plugin, 'register_cpt' ) );
 		\WP_Mock::expectActionAdded( 'add_meta_boxes', array( $this->plugin, 'adjust_meta_boxes' ), 0 );
 		\WP_Mock::expectActionAdded( 'default_hidden_meta_boxes', array( $this->plugin, 'set_default_hidden_meta_boxes' ), 10, 2 );
@@ -36,7 +36,13 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 			'return' => true
 		) );
 		\WP_Mock::expectFilterAdded( 'post_row_actions', array( $this->plugin, 'disable_quick_edit' ), 10, 2 );
-		$this->plugin->setup_cpt();
+		//$this->plugin->setup_cpt();
+		\WP_Mock::wpFunction( 'add_shortcode', array(
+			'times' => 1,
+			'args' => array( 'wrapper', array( $this->plugin, 'wrapper_shortcode' ) )
+		) );
+		//$this->plugin->setup_shortcode();
+		$this->plugin->init();
 	}
 
 	function test_register_cpt() {
@@ -94,14 +100,6 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 		$this->assertNotContains( 'authordiv', $result );
 	}
 
-	function test_setup_shortcode() {
-		\WP_Mock::wpFunction( 'add_shortcode', array(
-			'times' => 1,
-			'args' => array( 'wrapper', array( $this->plugin, 'wrapper_shortcode' ) )
-		) );
-		$this->plugin->setup_shortcode();
-	}
-
 	/**
 	 * @dataProvider wrapper_shortcode_id
 	 */
@@ -127,7 +125,41 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 	function wrapper_shortcode_id() {
 		return array(
 			array( 1 ),
-			array( 'id-slug' ),
+			array( 'slug' ),
 		);
+	}
+
+	function test_init_widget() {
+		\WP_Mock::expectActionAdded( 'widgets_init', array( $this->plugin, 'register_widget' ) );
+		\WP_Mock::expectActionAdded( 'wp_ajax_ap_get_wrapper_vars', array( $this->plugin, 'widget_ajax' ) );
+		$widget = 'foo\bar';
+		$this->plugin->init_widget( $widget );
+		$this->assertEquals( $widget, $this->plugin->widget_class );
+	}
+
+	function test_register_widget() {
+		$this->plugin->widget_class = 'foo\bar';
+		\WP_Mock::wpFunction( 'register_widget', array(
+			'times' => 1,
+			'args' => array( $this->plugin->widget_class )
+		) );
+		$this->plugin->register_widget();
+	}
+
+	function test_widget_ajax() {
+		//$this->plugin->widget_class = new stdClass;
+
+		$this->plugin->widget_class = \Mockery::mock('foo\bar')
+			->shouldReceive('get_var_fields')
+			->andReturn('baz')
+			->mock();
+		\WP_Mock::wpFunction( 'wp_die', array(
+			'times' => 1
+		) );
+		ob_start();
+		$this->plugin->widget_ajax();
+		$output = ob_get_contents();
+		ob_end_clean();
+		$this->assertEquals( 'baz', $output );
 	}
 }

@@ -15,4 +15,4 @@ require_once $dir . '/../vendor/autoload.php';
 //require_once 'AP_UnitTestCase.php';
 //require_once 'AP_BrowserUnitTestCase.php';
 
-require_once $dir . '/../build/assets/inc/AP_Wrap.php';
+require_once $dir . '/../build/assets/inc/Wrap.php';
