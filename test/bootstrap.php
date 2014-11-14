@@ -14,5 +14,5 @@ $dir = dirname( __FILE__ );
 require_once $dir . '/../vendor/autoload.php';
 //require_once 'AP_UnitTestCase.php';
 //require_once 'AP_BrowserUnitTestCase.php';
-
+require_once 'TestCase.php';
 require_once $dir . '/../build/assets/inc/Wrap.php';

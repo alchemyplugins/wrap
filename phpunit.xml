@@ -16,7 +16,7 @@
 	</filter>
 	<testsuites>
 		<testsuite>
-			<directory prefix="test" suffix=".php">./test/</directory>
+			<directory prefix="test-" suffix=".php">./test/</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

@@ -22,26 +22,45 @@ class WrapWidget extends \WP_Widget
 		return $output;
 	}
 
-	public function __construct() {
-		parent::__construct(
+	/**
+	* Setup widget internals.
+	*
+	* @see WP_Widget::__construct()
+	* @link https://core.trac.wordpress.org/browser/tags/4.0/src/wp-includes/widgets.php#L73
+	*/
+	function __construct() {
+		$this->init(
 			'ap_wrapper_widget',
-			__('Content Instance', '<%= pkg.name %>'), // Name
-			array( 'description' => __( 'Place a content instance', '<%= pkg.name %>' ),
-				'classname' => 'sample-widget'
-			) // Args
+			__( 'Content Instance', '<%= pkg.name %>' ),
+			array(
+				'description' => __( 'Place a content instance', '<%= pkg.name %>' ),
+				'classname' => 'sample-widget',
+			)
 		);
 	}
 
 	/**
-	 * Outputs the content of the widget
+	* Setup widget internals.
+	*
+	* @see WP_Widget::__construct()
+	* @link https://core.trac.wordpress.org/browser/tags/4.0/src/wp-includes/widgets.php#L73
+	*/
+	function init( $id_base, $name, $widget_options = array(), $control_options = array() ) {
+		parent::__construct( $id_base, $name, $widget_options, $control_options );
+	}
+
+	/**
+	 * Front-end display of widget.
 	 *
-	 * @param array $args
-	 * @param array $instance
+	 * @see WP_Widget::widget()
+	 *
+	 * @param array $args     Widget arguments.
+	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
 		var_dump($args);
 		var_dump($instance);
-		var_dump('ok1');
+		//var_dump('ok1');
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
@@ -51,9 +70,11 @@ class WrapWidget extends \WP_Widget
 	}
 
 	/**
-	 * Outputs the options form on admin
+	 * Back-end widget form.
 	 *
-	 * @param array $instance The widget options
+	 * @see WP_Widget::form()
+	 *
+	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
 		$output = '';

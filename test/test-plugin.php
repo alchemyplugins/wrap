@@ -25,6 +25,7 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 	function tearDown() {
 		unset( $this->plugin );
 		\WP_Mock::tearDown();
+		\Mockery::close();
 	}
 
 	function test_init() {
@@ -147,12 +148,9 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 	}
 
 	function test_widget_ajax() {
-		//$this->plugin->widget_class = new stdClass;
-
-		$this->plugin->widget_class = \Mockery::mock('foo\bar')
-			->shouldReceive('get_var_fields')
-			->andReturn('baz')
-			->mock();
+		$mock = \Mockery::mock('foo\bar');
+		$mock->shouldReceive('get_var_fields')->andReturn('baz');
+		$this->plugin->widget_class = $mock;
 		\WP_Mock::wpFunction( 'wp_die', array(
 			'times' => 1
 		) );

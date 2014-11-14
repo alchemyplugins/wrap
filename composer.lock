@@ -131,12 +131,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/facebook/php-webdriver.git",
-                "reference": "64802a75f2cc0a866460654aac999f14dc04f7c0"
+                "reference": "11c7bc5c73a0ee7a658ea1c8b5ac3a06a8ce6970"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/64802a75f2cc0a866460654aac999f14dc04f7c0",
-                "reference": "64802a75f2cc0a866460654aac999f14dc04f7c0",
+                "url": "https://api.github.com/repos/facebook/php-webdriver/zipball/11c7bc5c73a0ee7a658ea1c8b5ac3a06a8ce6970",
+                "reference": "11c7bc5c73a0ee7a658ea1c8b5ac3a06a8ce6970",
                 "shasum": ""
             },
             "require": {
@@ -164,7 +164,7 @@
                 "selenium",
                 "webdriver"
             ],
-            "time": "2014-10-01 19:58:12"
+            "time": "2014-11-10 17:54:21"
         },
         {
             "name": "mockery/mockery",
