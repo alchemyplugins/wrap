@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9f31f3771935df3549ab968f778ca8b3",
+    "hash": "bc127ea9146315a218842e9cc9265743",
     "packages": [],
     "packages-dev": [
         {
@@ -489,16 +489,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "0.9.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "95a4855380dc70176c51807c678fb3bd6198529a"
+                "reference": "30eb319efcf2ebe6b4529be51f60df78340bdbb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/95a4855380dc70176c51807c678fb3bd6198529a",
-                "reference": "95a4855380dc70176c51807c678fb3bd6198529a",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/30eb319efcf2ebe6b4529be51f60df78340bdbb5",
+                "reference": "30eb319efcf2ebe6b4529be51f60df78340bdbb5",
                 "shasum": ""
             },
             "require": {
@@ -551,13 +551,14 @@
                 "test double",
                 "testing"
             ],
-            "time": "2014-09-03 10:11:10"
+            "time": "2014-11-10 08:31:38"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "10up/wp_mock": 20,
+        "mockery/mockery": 20,
         "facebook/webdriver": 20
     },
     "prefer-stable": false,

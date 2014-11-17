@@ -13,6 +13,19 @@ class Wrap {
 
 	public $widget_class = null;
 
+	private static $instance = null;
+
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) ) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
+
+	function get_post_type() {
+		return $this->cpt;
+	}
+
 	function init() {
 		$this->setup_cpt();
 		$this->setup_shortcode();

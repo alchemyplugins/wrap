@@ -139,10 +139,11 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 	}
 
 	function test_register_widget() {
-		$this->plugin->widget_class = 'foo\bar';
+		$key = 'foo\bar';
+		$this->plugin->widget_class = $key;
 		\WP_Mock::wpFunction( 'register_widget', array(
 			'times' => 1,
-			'args' => array( $this->plugin->widget_class )
+			'args' => array( $key )
 		) );
 		$this->plugin->register_widget();
 	}

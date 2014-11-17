@@ -2,6 +2,46 @@
 
 namespace AlchemyPlugins;
 
+class WidgetHandler extends \WP_Widget {
+	function __construct() {
+		$args = apply_filters( 'wrap_widget_init', null, $args, $instance );
+		parent::__construct( $args['id_base'], $args['name'], $args['widget_options'], $args['control_options'] );
+	}
+
+	function widget( $args, $instance ) {
+		echo apply_filters( 'wrap_widget_widget', null, $args, $instance );
+	}
+
+	function form($instance) {
+		echo apply_filters( 'wrap_widget_form', null, $instance );
+	}
+}
+
+class Widget {
+	function register_widget() {
+
+	}
+}
+
+/*
+
+$wrap_widget = new AlchemyPlugins\Widget;
+
+$wrap_widget->set_form_handler(function(){
+
+});
+
+$wrap_widget->set_form_handler( array( $this, 'widget_form' ) );
+
+// creates handler class and filters/callbacks
+// registers with wp
+$wrap_widget->register();
+
+
+$wrap->init_widget($wrap_widget);
+
+*/
+
 class WrapWidget extends \WP_Widget
 {
 	public static function get_var_fields( $post_id, $field_id, $field_name, $field_value = null ) {
@@ -22,6 +62,7 @@ class WrapWidget extends \WP_Widget
 		return $output;
 	}
 
+	private $plugin;
 	/**
 	* Setup widget internals.
 	*
@@ -37,6 +78,7 @@ class WrapWidget extends \WP_Widget
 				'classname' => 'sample-widget',
 			)
 		);
+		$this->plugin = Wrap::get_instance();
 	}
 
 	/**
@@ -58,15 +100,29 @@ class WrapWidget extends \WP_Widget
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
-		var_dump($args);
-		var_dump($instance);
-		//var_dump('ok1');
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
 		}
-		echo __( 'Hello, World!', '<%= pkg.name %>' );
+		//echo __( 'Hello, World!', '<%= pkg.name %>' );
 		echo $args['after_widget'];
+	}
+
+	//function get_
+	function get_list_of_posts( ) {
+		$q = new \WP_Query( array(
+			'post_type' => $cpt,
+			'post_status' => 'publish',
+			'posts_per_page' => -1,
+			'ignore_sticky_posts' => true
+		) );
+
+		if( $q->have_posts() ) {
+			while ($q->have_posts()) {
+				$q->the_post();
+				$output .= sprintf( '<option value="%s"%s>%s</option>', $post->ID, ($post->ID==$post_id?' selected':''), get_the_title() );
+			}
+		}
 	}
 
 	/**
@@ -83,11 +139,9 @@ class WrapWidget extends \WP_Widget
 		$output .= sprintf( '<p><label for="%s">%s</label>', $this->get_field_id( 'title' ), __( 'Title:' ) );
 		$output .= sprintf( '<input class="widefat" id="%s" name="%s" type="text" value="%s"></p>', $this->get_field_id( 'title' ), $this->get_field_name( 'title' ), esc_attr( $title ) );
 
-
-global $cpt, $post;
 		// consider workflows, perhaps allow other post status array( 'publish', 'pending', 'draft', 'future', 'private')
-		$my_query = new \WP_Query( array(
-			'post_type' => $cpt,
+		$q = new \WP_Query( array(
+			'post_type' => $this->plugin->get_post_type(),
 			'post_status' => 'publish',
 			'posts_per_page' => -1,
 			'ignore_sticky_posts' => true
@@ -97,10 +151,10 @@ global $cpt, $post;
 		$output .= sprintf( '<p><label for="%s">%s</label>', $this->get_field_id( 'post_id' ), __( 'Snippet', '<%= pkg.name %>' ) );
 		$output .= sprintf( '<select id="%s" name="%s">', $this->get_field_id( 'post_id' ), $this->get_field_name( 'post_id' ) );
 		$output .= '<option value="">' . __( 'Select snippet ...', '<%= pkg.name %>' ) .'</option>';
-		if( $my_query->have_posts() ) {
-			while ($my_query->have_posts()) {
-				$my_query->the_post();
-				$output .= sprintf( '<option value="%s"%s>%s</option>', $post->ID, ($post->ID==$post_id?' selected':''), get_the_title() );
+		if( $q->have_posts() ) {
+			while ($q->have_posts()) {
+				$q->next_post();
+				$output .= sprintf( '<option value="%s"%s>%s</option>', $q->post->ID, ($q->post->ID==$post_id?' selected':''), get_the_title() );
 			}
 		}
 		$output .= '</select></p>';

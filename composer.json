@@ -5,6 +5,7 @@
     "minimum-stability": "stable",
     "require-dev": {
         "10up/wp_mock": "dev-master",
+        "mockery/mockery": "dev-master",
         "facebook/webdriver": "dev-master",
         "emagister/selenium-server": "2.*",
         "codeception/aspect-mock": "~0.5"
