@@ -121,6 +121,7 @@ module.exports = function(grunt) {
 		}
 	}
 	*/
+	//svn co http://develop.svn.wordpress.org/trunk/ wordpress-develop
 	// tasks
 	// build test // setup testing files
 	// build core // setup plugin files

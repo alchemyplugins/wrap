@@ -1,56 +1,59 @@
 <?php
 
-class PluginTest extends PHPUnit_Framework_TestCase {
+class PluginTest extends WP_UnitTestCase {
 
 	public $plugin = null;
 
+	public $post_type = 'ap_wrap3';
+
 	function setUp() {
-		\WP_Mock::setUp();
-		\WP_Mock::wpPassthruFunction( '__', array(
-			'args' => array(
-				\WP_Mock\Functions::type( 'string' ),
-				'ap-wrap',
-			),
-		) );
-		\WP_Mock::wpPassthruFunction( '_x', array(
-			'args' => array(
-				\WP_Mock\Functions::type( 'string' ),
-				\WP_Mock\Functions::type( 'string' ),
-				'ap-wrap',
-			),
-		) );
+		parent::setUp();
 		$this->plugin = new AlchemyPlugins\Wrap;
 	}
 
 	function tearDown() {
 		unset( $this->plugin );
-		\WP_Mock::tearDown();
 		\Mockery::close();
+		\DryRun::clean();
+		parent::tearDown();
+	}
+
+	function set_is_admin_truthy() {
+		set_current_screen( 'edit.php' );
+		$this->assertTrue( is_admin(), 'is admin screen' );
 	}
 
 	function test_init() {
-		\WP_Mock::expectActionAdded( 'init', array( $this->plugin, 'register_cpt' ) );
-		\WP_Mock::expectActionAdded( 'add_meta_boxes', array( $this->plugin, 'adjust_meta_boxes' ), 0 );
-		\WP_Mock::expectActionAdded( 'default_hidden_meta_boxes', array( $this->plugin, 'set_default_hidden_meta_boxes' ), 10, 2 );
-		\WP_Mock::wpFunction( 'is_admin', array(
-			'times' => 1,
-			'return' => true
-		) );
-		\WP_Mock::expectFilterAdded( 'post_row_actions', array( $this->plugin, 'disable_quick_edit' ), 10, 2 );
-		//$this->plugin->setup_cpt();
-		\WP_Mock::wpFunction( 'add_shortcode', array(
-			'times' => 1,
-			'args' => array( 'wrapper', array( $this->plugin, 'wrapper_shortcode' ) )
-		) );
-		//$this->plugin->setup_shortcode();
+
+		$this->set_is_admin_truthy();
+
+		$data = array(
+			array( 'init', array( $this->plugin, 'register_cpt' ), 10 ),
+			array( 'add_meta_boxes', array( $this->plugin, 'adjust_meta_boxes' ), 0 ),
+			array( 'default_hidden_meta_boxes', array( $this->plugin, 'set_default_hidden_meta_boxes' ), 10 ),
+			array( 'post_row_actions', array( $this->plugin, 'disable_quick_edit' ), 10 ),
+		);
+
+		foreach( $data as $row ) {
+			list( $filter, $func ) = $row;
+			$this->assertFalse( has_action( $filter, $func ), sprintf( 'Filter/action %s is not added yet', $filter ) );
+		}
+
 		$this->plugin->init();
+
+		foreach( $data as $row ) {
+			list( $filter, $func, $expected ) = $row;
+			$this->assertEquals( $expected, has_action( $filter, $func ), sprintf( 'Filter/action %s is added', $filter ) );
+		}
+
+		$post_id = $this->factory->post->create();
+		$this->assertEquals( 'Post content 1', do_shortcode( sprintf( '[wrapper id="%s"]', $post_id ) ), 'shortcode should return "Post content 1"' );
 	}
 
 	function test_register_cpt() {
-		\WP_Mock::wpFunction( 'register_post_type', array(
-			'times' => 1,
-		) );
+		$this->assertFalse( post_type_exists( $this->post_type ), 'post type not created yet' );
 		$this->plugin->register_cpt();
+		$this->assertTrue( post_type_exists( $this->post_type ), 'post type created');
 	}
 
 	function test_disable_quick_edit() {
@@ -67,23 +70,26 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 	}
 
 	function test_adjust_meta_boxes() {
-		\WP_Mock::wpFunction( 'remove_meta_box', array(
-			'times' => 1,
-			'args' => array( 'slugdiv', 'ap_wrap3', 'normal' )
-		) );
-		\WP_Mock::wpFunction( 'add_meta_box', array(
-			'times' => 1,
-			'args' => array( 'slugdiv', 'Content Name', 'post_slug_meta_box', 'ap_wrap3', 'side' )
-		) );
-		\WP_Mock::wpFunction( 'remove_meta_box', array(
-			'times' => 1,
-			'args' => array( 'authordiv', 'ap_wrap3', 'normal' )
-		) );
-		\WP_Mock::wpFunction( 'add_meta_box', array(
-			'times' => 1,
-			'args' => array( 'authordiv', 'Author', 'post_author_meta_box', 'ap_wrap3', 'side' )
-		) );
+
+		$remove_meta_box_spy = new DryRun\Spy( 'remove_meta_box' );
+
+		$remove_meta_box_spy->on( 'add_meta_box' );
+
+		$add_meta_box_spy = new DryRun\Spy( 'add_meta_box' );
+
 		$this->plugin->adjust_meta_boxes();
+
+		$this->assertEquals( 2, $remove_meta_box_spy->called() );
+
+		$this->assertEquals( array( 'slugdiv', 'ap_wrap3', 'normal' ), $remove_meta_box_spy->called(0) );
+
+		$this->assertEquals( array( 'authordiv', 'ap_wrap3', 'normal' ), $remove_meta_box_spy->called(1) );
+
+		$this->assertEquals( 2, $add_meta_box_spy->called() );
+
+		$this->assertEquals( array( 'slugdiv', 'Content Name', 'post_slug_meta_box', 'ap_wrap3', 'side' ), $add_meta_box_spy->called(0) );
+
+		$this->assertEquals( array( 'authordiv', 'Author', 'post_author_meta_box', 'ap_wrap3', 'side' ), $add_meta_box_spy->called(1) );
 	}
 
 	function test_set_default_hidden_meta_boxes() {
@@ -104,7 +110,7 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * @dataProvider wrapper_shortcode_id
 	 */
-	function test_wrapper_shortcode($id) {
+/*	function test_wrapper_shortcode($id) {
 		$post = new stdClass;
 		$post->post_content = 'foo{{var}} {{content}}';
 		\WP_Mock::wpFunction( 'get_post', array(
@@ -161,4 +167,5 @@ class PluginTest extends PHPUnit_Framework_TestCase {
 		ob_end_clean();
 		$this->assertEquals( 'baz', $output );
 	}
+	*/
 }

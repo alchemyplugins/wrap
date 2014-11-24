@@ -74,7 +74,6 @@ class WidgetTest extends WP_UnitTestCase {
 
 		$this->assertContains( 'widget-form', $output );
 
-		print_r($output);
-		echo "ok";
+		//print_r($output);
 	}
 }
